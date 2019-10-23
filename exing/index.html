@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>后台主页</title>
+	<link rel="stylesheet" type="text/css" href="./bootstrap-4.3.1/css/bootstrap.min.css">
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="./bootstrap-4.3.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="http://at.alicdn.com/t/font_1404286_2hdne726nja.css">
+
+
+	<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+
+	
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<script type="text/javascript" src="./js/index.js"></script>
+	
+</head>
+<body>
+	<div class="container-fluid">
+		<!-- 顶栏 -->
+		<div class="row header">
+			<!-- 左侧logo -->
+			<div class="col-md-2  logo font-weight-bolder">
+				<a href="index.html" >
+					E	行	订	餐 
+				</a>
+			</div>
+			
+			<!-- 顶部菜单按钮 -->
+			<div class="col-md-10 top-nav px-0">
+				<!-- 右侧按钮 -->
+				<!-- 导航栏按钮 -->
+				<!-- <a  href="javascript:void(0)" class="icon">
+					<i class="fa fa-bars"></i>
+				</a> -->
+				<ul class="mr-5 ">
+					<li>
+						<a  href="#" class="icon">
+							<i class="fa fa-bell "></i>
+						</a>
+					</li>
+					<li>
+						<a  href="#" class="icon">
+							<i class="fa fa-user"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 内容 -->
+		<div class="row content ">
+			<!-- 左边栏导航 -->
+			<div class="col-md-2 d-none d-md-block  left-nav text-light shadow-lg" style="display: none">
+				<!-- 用户信息 -->
+				<div class="user my-4  px-3">
+					<div class="user-img">
+						<img src="./images/userimg.jpg">
+					</div>
+					<div class="user-info">
+						<p>
+							管理员信息
+						</p>
+					</div>
+				</div>
+				<!-- 管理栏导航 -->
+				<ul>
+					<li url="./pages/customer.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-customer pr-2"></i>
+							<span>顾客管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li url="./pages/order.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-dingdan pr-2"></i>
+							<span>订单管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li  url="./pages/comment.html"> 
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-pingjia pr-2"></i>
+							<span>评价管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li  url="./pages/product.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-chanpin  pr-2"></i>
+							<span>产品管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li url="./pages/category.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-fenleiguanli pr-2"></i>
+							<span>商家管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li   url="./pages/address.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-dizhiguanli pr-2"></i>
+							<span>地址管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					<li  url="./pages/waiter.html">
+						<a href="javascript:void(0)">
+							<i class="iconfont icon-fuwuyuanguanli pr-2"></i>
+							<span>员工管理</span>
+							<i class="iconfont icon-arrow-right "></i>
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+			<!-- 右边内容 -->
+			<div class="col-md-10 right-content ml-auto">
+				<div id="content-wrapper">
+					
+				</div>
+			
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

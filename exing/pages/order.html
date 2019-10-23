@@ -1,0 +1,376 @@
+<!-- 样式 -->
+<style type="text/css">
+	.btn{
+		display: inline-block;
+		cursor: pointer;
+	}
+	.btns{
+		position: relative;
+	}
+	#btn-batch-del{
+		position: absolute;
+		right: 0;
+	}
+
+	.toast{
+		min-width:200px;
+		position: fixed; 
+		top: 4rem;
+	}
+</style>
+<!-- 右边内容顶部面包屑导航 -->
+
+<div class="row bg-light px-4 py-3 pagetitle">
+	<div class="pagetitle-left">
+		<h4 >
+			<i class="iconfont icon-dingdan "></i>
+			<span>订单管理</span>
+		</h4>
+	</div>
+	<div class="pagetitle-right ">
+		<ul>
+			<li>
+				<i class="iconfont icon-shouye "></i>
+			</li>
+			<span class="text-black-50">/</span>
+			<li>
+				<a href="#" class="text-info">订单管理</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<!-- / 面包屑导航 -->
+
+
+<!-- 内容表格 -->
+<div class="bg-light mx-3 mt-4 p-4 ">
+	<!-- 按钮 -->
+	<div class="btns mb-4">
+		<div class="btn btn-outline-info mr-3" id="btn-add" >
+			添加
+		</div>
+		<div class="btn btn-outline-danger " id="btn-batch-del">
+			批量删除
+		</div>
+		<div class="btn btn-outline-secondary mr-3">
+			导出
+		</div>
+
+	</div>
+	<table class="table  table-bordered table-hover table-sm" id="order-table">
+		<thead>
+			<tr class="table-info">
+				<td width="80px">编号</td>
+				<td>顾客编号</td>
+				<td>地址编号</td>
+				<td>下单时间</td>
+				<td>员工编号</td>
+				<td>总计个数</td>
+				<td  width="100px">操作</td>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<!-- / 内容表格 -->
+<!-- 添加按钮模态框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" >
+  <div class="modal-dialog modal-lg" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">添加订单信息</h5>
+        <button type="button" class="close" onclick="closeCustomerModal(this)"  >
+          <span >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="order-form">
+        	<!-- id -->
+        	<input id="input-id" type="hidden" name="id">
+        	<!-- 顾客id -->
+        	<div class="form-group row">
+				<label for="input-select-customer" class="col-2 text-right" >查询顾客</label>
+				<div class=" col-10">
+					<select class="form-control" name="query-customer" id="input-select-customer" style="width: 50%;"></select>
+				</div>
+			</div>
+			<!-- 地址编号 -->
+			<div class="form-group row">
+				<label for="input-select-address" class="col-2 text-right" >查询地址</label>
+				<div class=" col-10">
+					<select class="form-control" name="query-address" id="input-select-address" style="width: 50%;"></select>
+				</div>
+			</div>
+			<!-- / 地址编号 -->
+			<!-- 产品id -->
+			<div class="form-group row">
+				<label for="input-select-customer" class="col-2 text-right" >查询产品</label>
+				<div class=" col-10">
+					<select class="form-control" name="query-product" id="input-select-product" style="width: 50%;"></select>
+				</div>
+			</div>
+			<!-- / 产品id -->
+			<!-- 总数 -->
+			<div class="form-group row">
+				<label for="input-number" class="col-2 text-right" >总数</label>
+				<div class=" col-10">
+					<input class="form-control" id="input-number" type="text" name="number" >
+				</div>
+			</div>
+			<!-- / 总数 -->
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick=" closeOrderModal(this)">关闭</button>
+        <button id="order-submit" type="button" class="btn btn-primary" onclick="closeOrderModal(this)">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / 添加按钮模态框 -->
+<!-- 添加成功提示框 -->
+<div  class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+  <div class="toast" id="toast-order-submit" >
+    <div class="toast-header">
+	    <i class="fa fa-check-circle mr-2 text-success" ></i>
+		<strong class="mr-auto">order</strong>
+		<!-- <small>10 mins ago</small> -->
+		<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" >
+		<span>&times;</span>
+		</button>
+    </div>
+    <div class="toast-body" style="text-align: center">
+    	提 交 成 功
+    </div> 
+  </div>
+</div>
+<!-- / 添加成功提示框 -->
+<!-- 删除提示框 -->
+<div  class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+	<div class="toast" id="toast-order-delet" >
+		<div class="toast-header">
+		    <i class="fa fa-check-circle rounded mr-2 text-danger" ></i>	
+			<strong class="mr-auto">order</strong>
+			<small>10 mins ago</small>
+			<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" >
+			<span>&times;</span>
+			</button>
+		</div>
+		<div class="toast-body" style="text-align: center">
+			删 除 成 功
+		</div> 
+	</div>
+</div>
+
+<!-- js -->
+
+<script type="text/javascript">
+	$.ajaxSetup({
+		traditional:false
+	})
+	var baseURL = "http://134.175.100.63:6677";
+	//重载数据
+	function reloadData(){
+		var url = baseURL+"/order/findAll";
+		//调用后台接口
+		$.get(url,function(result){
+			//先删除原有数据
+			$("#order-table tbody").empty();
+			//新建tr接受数据
+			result.data.forEach(function(item){
+				$(`	
+					<tr>
+						<td>
+						<input type="checkbox" value="`+item.id+`">
+						</td>
+						<td>`+item.customerId+`</td>
+						<td>`+item.addressId+`</td>
+						<td>`+item.orderTime+`</td>
+						<td>`+item.waiterId+`</td>
+						<td>`+item.total+`</td>
+						<td>
+							<a class="btn-upd" href="javascript:void(0)">
+								<i class="fa fa-edit text-info p-1"></i>
+							</a>
+							<a  class="btn-del" href="javascript:void(0)">
+								<i class="fa fa-trash-alt text-danger p-1"></i>
+							</a>
+						</td>
+					</tr>`).appendTo("#order-table tbody");
+			})
+		})
+	}
+	//封装方法关闭模态框
+	function closeOrderModal(p){
+		$(p).parents(".modal").modal("hide");
+	}
+	 //封装下拉框去重方法
+	 function clearRepeat(arr){
+        var tem = [];
+        for(var i=0;i<arr.length;i++){
+            if(tem.indexOf(arr[i])===-1){
+                tem.push(arr[i]);
+            }
+        }
+        return tem;
+    }
+
+	//文档加载完毕后执行
+	$(function(){
+		reloadData();
+		//提示框初始化
+		$(".toast").toast({
+			autohide:true,
+			delay:2000
+		})
+		//给下拉框按钮获取数据和拼接节点
+		//查询顾客
+		$.ajax({
+			url:baseURL+"/customer/findAll",
+			method:"get",
+			success:function(result){
+				$("#input-select-customer").empty()
+				$("#input-select-customer").append('<option selected>查询顾客</option>') 
+				result.data.forEach(function(item){
+					$("#input-select-customer").append('<option value="'+item.id+'">'+item.realname+'</option>') 
+				})
+			}
+		})
+		//查询地址
+		$.ajax({
+			url:baseURL+"/address/findAll",
+			method:"get",
+			success:function(result){
+				$("#input-select-address").empty()
+				$("#input-select-address").append('<option selected>查询地址</option>') 
+				result.data.forEach(function(item){
+					$("#input-select-address").append('<option value="'+item.id+'">'+item.address+'</option>') 
+				})
+			}
+		})
+		//查询产品
+		$.ajax({
+			url:baseURL+"/product/findAll",
+			method:"get",
+			success:function(result){
+				result.data.forEach(function(item){
+					$("#input-select-product").append('<option value="'+item.id+'">'+item.name+'</option>') 
+				})
+			}
+		})
+		//给添加按钮绑定事件,弹出模态框
+		$("#btn-add").click(function(){
+			$("#exampleModal").modal("show");
+			//置表单为空
+			/*$('#order-form input[name=id]').val("");
+			$('#order-form input[name=customerId]').val("");
+			$('#order-form input[name=addressId]').val("");
+			$('#order-form input[name=productId]').val("");
+			$('#order-form input[name=orderId]').val("");
+			$('#order-form input[name=number]').val("");*/
+		})
+
+		//模态框提交按钮绑定事件
+		$("#order-submit").click(function(){
+
+			//获取用户输入
+			var id = $('#order-form input[name=id]').val();
+			var customerId = $('#input-select-customer option:selected').val();
+			var addressId = $('#input-select-address option:selected').val();
+			// var productId = $('#input-select-product option:selected').val();
+			console.log(customerId+","+addressId);
+			var url = baseURL + "/order/save";
+			//判断是否有ID存在,有则可以进行修改,无则进行添加操作
+			var data = {
+				id:id,
+				customerId:customerId,
+				addressId:addressId	
+			}
+			
+			$.post(url,data,function(result){
+				if (result.status === 200) {
+					//重载数据
+					reloadData();
+					//弹出提示框
+					$("#toast-order-submit").toast("show");
+				}else{
+					alert("失败");
+				}
+			})
+		})
+
+		//删除按钮绑定事件
+		$("#order-table tbody").on("click","a",function(event){
+			switch(this.className){
+				//选择a标签
+				case "btn-del":
+					//获取要删除的id
+					var id = $(this).parents("tr").children().eq(0).find('input').val();
+					//获取后台,编写ajax进行删除
+					var url = baseURL + "/order/deleteById";
+					var data = {
+						id:id
+					}
+					$.get(url,data,function(result){
+						$("#toast-order-delet").toast("show");
+						reloadData();
+					})
+					break;
+				case "btn-upd":
+					//修改数据
+					// var id = $(this).parents("tr").children().eq(0).find('input').val();
+					// var customerId = $(this).parents("tr").children().eq(1).text();
+					// var addressId = $(this).parents("tr").children().eq(2).text();
+					// //将数据传入表单
+					// $('#order-form input[name=id]').val(id);
+					// $('#order-form input[name=customerId]').val(customerId);
+					// $('#order-form input[name=addressId]').val(addressId);
+					// $('#order-form input[name=orderTime]').val(orderTime);
+					// $('#order-form input[name=waiterId]').val(waiterId);
+					// $('#order-form input[name=total]').val(total);
+					// //弹出模态框表单
+					// $("#exampleModal").modal("show");
+					// break;
+			}
+		})
+
+		//给批量删除绑定事件
+		$("#btn-batch-del").click(function(){
+			//获取id
+			var id = $("#order-table input:checkbox").filter(":checked").map(function(index,item){
+				return $(item).val();
+			}).toArray();
+			var data = "";
+			for(var key in id){
+				var ids = id[key];
+				if (key==0) {
+					data+="ids="+ids;
+				}else{
+					data+="&ids="+ids;
+				}
+			}
+			var url = baseURL+"/order/batchDelete";
+			$.ajax({
+				url:url,
+				method:"post",
+				data:data,
+				success:function(result){
+					console.log(result);
+					if(result.status === 200){
+						$("#toast-order-delet").toast("show");
+						reloadData();
+					}else{
+						alert("删除失败");
+					}
+				}
+			})
+		})
+
+
+
+
+
+	})
+	 
+</script>

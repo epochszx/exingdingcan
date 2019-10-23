@@ -1,0 +1,325 @@
+<!-- 样式 -->
+<style type="text/css">
+	.btn{
+		display: inline-block;
+		cursor: pointer;
+	}
+	.btns{
+		position: relative;
+	}
+	#btn-batch-del{
+		position: absolute;
+		right: 0;
+	}
+
+	.toast{
+		min-width:200px;
+		position: fixed; 
+		top: 4rem;
+	}
+</style>
+<!-- 右边内容顶部面包屑导航 -->
+
+<div class="row bg-light px-4 py-3 pagetitle">
+	<div class="pagetitle-left">
+		<h4 >
+			<i class="iconfont icon-chanpin  "></i>
+			<span>产品管理</span>
+		</h4>
+	</div>
+	<div class="pagetitle-right ">
+		<ul>
+			<li>
+				<i class="iconfont icon-shouye "></i>
+			</li>
+			<span class="text-black-50">/</span>
+			<li>
+				<a href="#" class="text-info">产品管理</a>
+			</li>
+		</	ul>
+	</div>
+</div>
+<!-- / 面包屑导航 -->
+
+
+<!-- 内容表格 -->
+<div class="bg-light mx-3 mt-4 p-4 ">
+	<!-- 按钮 -->
+	<div class="btns mb-4">
+		<div class="btn btn-outline-info mr-3" id="btn-add" >
+			添加
+		</div>
+		<div class="btn btn-outline-danger " id="btn-batch-del">
+			批量删除
+		</div>
+		<div class="btn btn-outline-secondary mr-3">
+			导出
+		</div>
+
+	</div>
+	<table class="table  table-bordered table-hover table-sm" id="product-table">
+		<thead>
+			<tr class="table-info">
+				<td width="80px">编号</td>
+				<td>产品名称</td>
+				<td>产品描述</td>
+				<td>价格</td>
+				<td>照片</td>
+				<td>所属分类</td>
+				<td  width="100px">操作</td>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<!-- / 内容表格 -->
+<!-- 添加按钮模态框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" >
+  <div class="modal-dialog modal-lg" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">添加产品信息</h5>
+        <button type="button" class="close" onclick="closeProductModal(this)"  >
+          <span >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="product-form">
+        	<!-- id -->
+        	<input id="input-id" type="hidden" name="id">
+			<!-- 名称 -->
+			<div class="form-group row">
+				<label for="input-name" class="col-2 text-right" >产品名称</label>
+				<div class=" col-10">
+					<input class="form-control" id="input-name" type="text" name="name">
+				</div>
+			</div>
+			<!-- / 名称 -->
+			<!-- 产品描述 -->
+			<div class="form-group row">
+				<label for="input-description" class="col-2 text-right" >产品描述</label>
+				<div class=" col-10">
+					<input class="form-control" id="input-description" type="text" name="description">
+				</div>
+			</div>
+			<!-- / 产品描述 -->
+			<!-- 产品价格 -->
+			<div class="form-group row">
+				<label for="input-price" class="col-2 text-right" >产品价格</label>
+				<div class=" col-10">
+					<input class="form-control" id="input-price" type="text" name="price">
+				</div>
+			</div>
+			<!-- / 产品价格 -->
+			<!-- 所属分类 -->
+			<div class="form-group row">
+				<label for="input-categoryId" class="col-2 text-right" >所属分类</label>
+				<div class=" col-10">
+					<input class="form-control" id="input-categoryId" type="text" name="categoryId">
+				</div>
+			</div>
+			<!-- / 所属分类 -->
+			
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick=" closeProductModal(this)">关闭</button>
+        <button id="product-submit" type="button" class="btn btn-primary" onclick="closeProductModal(this)">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / 添加按钮模态框 -->
+<!-- 添加成功提示框 -->
+<div  class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+  <div class="toast" id="toast-product-submit" >
+    <div class="toast-header">
+	    <i class="fa fa-check-circle mr-2 text-success" ></i>
+		<strong class="mr-auto">product</strong>
+		<!-- <small>10 mins ago</small> -->
+		<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" >
+		<span>&times;</span>
+		</button>
+    </div>
+    <div class="toast-body" style="text-align: center">
+    	提 交 成 功
+    </div> 
+  </div>
+</div>
+<!-- / 添加成功提示框 -->
+<!-- 删除提示框 -->
+<div  class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+	<div class="toast" id="toast-product-delet" >
+		<div class="toast-header">
+		    <i class="fa fa-check-circle rounded mr-2 text-danger" ></i>	
+			<strong class="mr-auto">product</strong>
+			<small>10 mins ago</small>
+			<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" >
+			<span>&times;</span>
+			</button>
+		</div>
+		<div class="toast-body" style="text-align: center">
+			删 除 成 功
+		</div> 
+	</div>
+</div>
+
+<!-- js -->
+
+<script type="text/javascript">
+	var baseURL = "http://134.175.100.63:6677";
+	//重载数据
+	function reloadData(){
+		var url = baseURL+"/product/findAll";
+		//调用后台接口
+		$.get(url,function(result){
+			//先删除原有数据
+			$("#product-table tbody").empty();
+			//新建tr接受数据
+			result.data.forEach(function(item){
+				$(`	
+					<tr>
+						<td>
+							<input type="checkbox" value="`+item.id+`">
+						</td>
+						<td>`+item.name+`</td>
+						<td>`+item.description+`</td>
+						<td>`+item.price+`</td>
+						<td>`+item.photo+`</td>
+						<td>`+item.categoryId+`</td>
+						<td>
+							<a class="btn-upd" href="javascript:void(0)">
+								<i class="fa fa-edit text-info p-1"></i>
+							</a>
+							<a  class="btn-del" href="javascript:void(0)">
+								<i class="fa fa-trash-alt text-danger p-1"></i>
+							</a>
+						</td>
+					</tr>`).appendTo("#product-table tbody");
+			})
+		})
+	}
+	//封装方法关闭模态框
+	function closeProductModal(p){
+		$(p).parents(".modal").modal("hide");
+	}
+
+$(function(){
+	reloadData();
+	//提示框初始化
+		$(".toast").toast({
+			autohide:true,
+			delay:2000
+		})
+		//给添加按钮绑定事件,弹出模态框
+		$("#btn-add").click(function(){
+			$("#exampleModal").modal("show");
+			//置表单为空
+			$('#product-form input[name=id]').val("");
+			$('#product-form input[name=name]').val("");
+			$('#product-form input[name=description]').val("");
+			$('#product-form input[name=price]').val("");
+		})
+
+		//模态框提交按钮绑定事件
+		$("#product-submit").click(function(){
+
+			//获取用户输入
+			var id = $('#product-form input[name=id]').val();
+			var name = $('#product-form input[name=name]').val();
+			var description = $('#product-form input[name=description]').val();
+			var price = $('#product-form input[name=price]').val();
+			var url = baseURL + "/product/saveOrUpdate";
+			//判断是否有ID存在,有则可以进行修改,无则进行添加操作
+			var data = {
+				id:id,
+				name:name,
+				description:description,
+				price:price
+			}
+			$.post(url,data,function(result){
+				if (result.status === 200) {
+					//关闭模态框
+					// closeCustomerModal();? ? ?
+					//重载数据
+					reloadData();
+					//弹出提示框
+					$("#toast-product-submit").toast("show");
+				}
+			})
+		})
+
+		//删除按钮绑定事件
+		$("#product-table tbody").on("click","a",function(event){
+			switch(this.className){
+				//选择a标签
+				case "btn-del":
+					//获取要删除的id
+					var id = $(this).parents("tr").children().eq(0).find('input').val();
+					//获取后台,编写ajax进行删除
+					var url = baseURL + "/product/deleteById";
+					var data = {
+						id:id
+					}
+					$.get(url,data,function(result){
+						$("#toast-product-delet").toast("show");
+						reloadData();
+					})
+					break;
+				case "btn-upd":
+					//修改数据
+					var id = $(this).parents("tr").children().eq(0).find('input').val();
+					var name = $(this).parents("tr").children().eq(1).text();
+					var description = $(this).parents("tr").children().eq(2).text();
+					var price = $(this).parents("tr").children().eq(3).text();
+					//将数据传入表单
+					$('#product-form input[name=id]').val(id);
+					$('#product-form input[name=name]').val(name);
+					$('#product-form input[name=description]').val(description);
+					$('#product-form input[name=price]').val(price);
+					//弹出模态框表单
+					$("#exampleModal").modal("show");
+					break;
+			}
+		})
+
+		//给批量删除绑定事件
+		$("#btn-batch-del").click(function(){
+			//获取id
+			var id = $("#product-table input:checkbox").filter(":checked").map(function(index,item){
+				return $(item).val();
+			}).toArray();
+			var data = "";
+			for(var key in id){
+				var ids = id[key];
+				if (key==0) {
+					data+="ids="+ids;
+				}else{
+					data+="&ids="+ids;
+				}
+			}
+			var url = baseURL+"/product/batchDelete";
+			$.ajax({
+				url:url,
+				method:"post",
+				data:data,
+				success:function(result){
+					console.log(result);
+					if(result.status === 200){
+						$("#toast-product-delet").toast("show");
+						reloadData();
+					}else{
+						alert("删除失败");
+					}
+				}
+			})
+		})
+
+
+
+
+
+	})
+	 
+</script>
